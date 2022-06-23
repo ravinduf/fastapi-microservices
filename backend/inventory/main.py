@@ -1,3 +1,4 @@
+from base64 import decode
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from redis_om import get_redis_connection, HashModel
@@ -47,6 +48,7 @@ def create(product: Product):
 
 @app.get('/products/{pk}')
 def get(pk: str):
+    print(Product.get(pk))
     return Product.get(pk)
 
 @app.delete('/products/{pk}')
