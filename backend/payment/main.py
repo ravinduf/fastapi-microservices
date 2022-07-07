@@ -71,7 +71,7 @@ async def create(request: Request, background_tasks: BackgroundTasks): #id, quan
     
     background_tasks.add_task(order_completed, order)
     
-
+    # redis.xadd('refund_order', order.dict(), '*')
     return order
     
 def order_completed(order: Order):

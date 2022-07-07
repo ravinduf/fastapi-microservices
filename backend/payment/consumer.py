@@ -1,9 +1,9 @@
 from ast import Try
-from main import redis, Product
+from main import redis, Order
 import time
 
-key = 'order_completed'
-group = 'inventory-group'
+key = 'refund_order'
+group = 'payment-group'
 
 try:
     redis.xgroup_create(key, group)
@@ -19,13 +19,11 @@ while True:
         if results != []:
             for result in results:
                 obj = result[1][0][1]
+                order = Order.get(obj['pk'])
+                order.status = 'refunded'
+                print(order)
+                order.save()
                 
-                try:
-                    product = Product.get(obj['product_id'])
-                    product.quantity = product.quantity - int(obj['quantity'])
-                    product.save()
-                except :
-                    redis.xadd('refund_order', obj, '*')
     except Exception as e:
         print(str(e))
     time.sleep(1)
